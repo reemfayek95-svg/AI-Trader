@@ -113,3 +113,4 @@ deprecated/
 test_*.py
 *.backup
 /data/*_test_agent/
+*__test*
