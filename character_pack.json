@@ -1,0 +1,39 @@
+{
+  "character_core": {
+    "name": "Reem Smoke Queen",
+    "description": "Sultry, sharp-eyed femme fatale, soft jawline, full lips, mysterious smirk, long lashes, smoke-lit skin glow, gemstone necklace, piercing gaze, elegant but dangerous energy."
+  },
+  "color_palette": {
+    "name": "420 Neon Lounge Palette",
+    "colors": {
+      "skin_glow": "#F3C6B3",
+      "neon_purple": "#8C3FFF",
+      "deep_blue": "#071F3B",
+      "smoke_white": "#DCE2E9",
+      "acid_pink": "#FF4FB3"
+    }
+  },
+  "outfits": {
+    "1": {
+      "name": "Midnight Mafia Mistress",
+      "description": "Black leather corset, Diamond chain, Finger rings, Dark smokey eyes"
+    },
+    "2": {
+      "name": "Purple Velvet Lounge",
+      "description": "Strap top, Layered necklaces, Cig holder"
+    },
+    "3": {
+      "name": "Cyber Femme Assassin",
+      "description": "Black latex coat, Neon eyeliner, Gunmetal jewelry"
+    },
+    "4": {
+      "name": "420 Silk Queen",
+      "description": "Purple satin dress, Gold chain chokers, Soft smoke lips"
+    },
+    "5": {
+      "name": "Sweet Ash Princess",
+      "description": "Pastel corset, Pearl chain, Bare shoulders + purple cigarette haze"
+    }
+  },
+  "gold_prompt_template": "420 neon anime vaporwave lounge scene, Reem Smoke Queen, sultry sharp eyes, soft jawline, full lips, smoke haze, purple neon backlight, cinematic lighting, jewelry reflection, semi-realistic anime, detailed textures, vapor trails, ultrasharp, 8k art, no distortion"
+}
