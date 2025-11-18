@@ -1,6 +1,10 @@
-langchain==1.0.2
-langchain-openai==1.0.1
+# Compatible versions for Python 3.9+
+langchain>=0.3.0
+langchain-openai>=0.2.0
 langchain-mcp-adapters>=0.1.0
-fastmcp==2.12.5
-
+fastmcp>=2.0.0
+python-dotenv>=1.0.0
+requests>=2.31.0
+numpy>=1.24.0
+pandas>=2.0.0
 tushare
