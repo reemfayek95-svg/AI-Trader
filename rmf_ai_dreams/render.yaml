@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: rmf-ai-dreams
+    env: docker
+    dockerfilePath: ./Dockerfile.production
+    region: oregon
+    plan: free
+    autoDeploy: true
+    healthCheckPath: /_stcore/health
+    envVars:
+      - key: OWNER_CODE
+        value: REEM_RMF_2026
+      - key: STREAMLIT_SERVER_PORT
+        value: 8501
+      - key: STREAMLIT_SERVER_ADDRESS
+        value: 0.0.0.0
