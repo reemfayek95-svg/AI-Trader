@@ -1,0 +1,39 @@
+{
+  "agent_type": "GateAgent",
+  "market": "crypto",
+  "date_range": {
+    "init_date": "2026-01-30",
+    "end_date": "2026-02-28"
+  },
+  "models": [
+    {
+      "name": "gpt-4o",
+      "basemodel": "openai/gpt-4o",
+      "signature": "gate-trader-gpt4o",
+      "enabled": true,
+      "openai_base_url": "Optional: YOUR_OPENAI_BASE_URL",
+      "openai_api_key": "Optional: YOUR_OPENAI_API_KEY"
+    },
+    {
+      "name": "claude-3.7-sonnet",
+      "basemodel": "anthropic/claude-3.7-sonnet",
+      "signature": "gate-trader-claude",
+      "enabled": false
+    }
+  ],
+  "agent_config": {
+    "max_steps": 30,
+    "max_retries": 3,
+    "base_delay": 1.0,
+    "initial_cash": 1000.0,
+    "trading_interval_minutes": 60
+  },
+  "log_config": {
+    "log_path": "./data/gate_agent_data"
+  },
+  "gate_config": {
+    "api_key": "YOUR_GATE_API_KEY",
+    "api_secret": "YOUR_GATE_API_SECRET",
+    "trading_pairs": ["BTC_USDT", "ETH_USDT", "SOL_USDT", "BNB_USDT"]
+  }
+}

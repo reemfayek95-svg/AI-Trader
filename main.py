@@ -26,6 +26,10 @@ AGENT_REGISTRY = {
         "module": "agent.base_agent_astock.base_agent_astock",
         "class": "BaseAgentAStock"
     },
+    "GateAgent": {
+        "module": "agent.gate_agent.gate_agent",
+        "class": "GateAgent"
+    },
 }
 
 
