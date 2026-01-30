@@ -124,13 +124,18 @@ class GateAgent:
         """Generate Gate.io API signature"""
         timestamp = str(int(time.time()))
         
+        # Hash payload
+        m = hashlib.sha512()
+        m.update((payload_string or '').encode('utf-8'))
+        hashed_payload = m.hexdigest()
+        
         # Create signature string
-        sign_string = f"{method}\n{url}\n{query_string}\n{hashlib.sha512(payload_string.encode()).hexdigest()}\n{timestamp}"
+        sign_string = f"{method}\n{url}\n{query_string}\n{hashed_payload}\n{timestamp}"
         
         # Generate HMAC signature
         signature = hmac.new(
-            self.api_secret.encode(),
-            sign_string.encode(),
+            self.api_secret.encode('utf-8'),
+            sign_string.encode('utf-8'),
             hashlib.sha512
         ).hexdigest()
         

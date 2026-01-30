@@ -14,7 +14,7 @@ from urllib.parse import urlencode
 import requests
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(override=True)
 
 
 def generate_signature(api_secret, method, url, query_string="", payload_string=""):
