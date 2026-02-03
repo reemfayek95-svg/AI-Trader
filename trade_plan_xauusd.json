@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-02-03T03:21:24.938535",
+  "account_balance": 10.0,
+  "symbol": "XAUUSD",
+  "direction": "BUY",
+  "lot_size": 0.01,
+  "entry_price": 2848.0,
+  "stop_loss": 2833.0,
+  "take_profit_1": 2873.0,
+  "take_profit_2": 2893.0,
+  "potential_loss": 0.15,
+  "potential_profit_1": 0.25,
+  "potential_profit_2": 0.45,
+  "risk_reward_1": 1.6666666666666667,
+  "risk_reward_2": 3.0,
+  "margin_required": 5.7
+}
