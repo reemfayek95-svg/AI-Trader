@@ -9,6 +9,7 @@ from datetime import datetime
 import json
 import os
 from dotenv import load_dotenv
+from telegram_notifier import TelegramNotifier
 
 load_dotenv()
 
@@ -17,7 +18,7 @@ class MT5CopyTrader:
     نظام Copy Trading ذكي لـ MT5
     """
     
-    def __init__(self, 
+    def __init__(self,
                  account: int,
                  password: str,
                  server: str,
@@ -25,7 +26,7 @@ class MT5CopyTrader:
                  max_leverage: int = 200):
         """
         تهيئة الاتصال بـ MT5
-        
+
         Args:
             account: رقم الحساب
             password: الباسورد
@@ -39,6 +40,7 @@ class MT5CopyTrader:
         self.performance_fee = performance_fee
         self.max_leverage = max_leverage
         self.connected = False
+        self.telegram = TelegramNotifier()  # Telegram notifier
         
     def connect(self) -> bool:
         """
@@ -65,6 +67,15 @@ class MT5CopyTrader:
         # تفعيل التداول الآلي
         if not self._enable_auto_trading():
             print("⚠️ تحذير: التداول الآلي قد يكون معطّل")
+
+        # إشعار Telegram
+        account_info = mt5.account_info()
+        if account_info:
+            self.telegram.notify_bot_started(
+                self.account,
+                self.server,
+                account_info.balance
+            )
 
         return True
 
@@ -183,12 +194,20 @@ class MT5CopyTrader:
             elif result.retcode == 10015:  # INVALID_VOLUME
                 error_msg += f"\n💡 الحجم {volume} غلط - أقل حجم: {symbol_info.volume_min}"
 
+            # إشعار Telegram بالخطأ
+            self.telegram.notify_error(error_msg)
+
             return {
                 'success': False,
                 'error': error_msg,
                 'retcode': result.retcode
             }
-            
+
+        # إشعار Telegram بفتح الصفقة
+        self.telegram.notify_trade_opened(
+            symbol, order_type, volume, price, sl, tp
+        )
+
         return {
             'success': True,
             'ticket': result.order,
@@ -235,13 +254,28 @@ class MT5CopyTrader:
         }
         
         result = mt5.order_send(request)
-        
+
         if result.retcode != mt5.TRADE_RETCODE_DONE:
+            error_msg = f'فشل إغلاق الصفقة: {result.comment}'
+            self.telegram.notify_error(error_msg)
             return {
                 'success': False,
-                'error': f'فشل إغلاق الصفقة: {result.comment}'
+                'error': error_msg
             }
-            
+
+        # حساب مدة الصفقة
+        duration = str(datetime.now() - datetime.fromtimestamp(position.time))
+
+        # إشعار Telegram بإغلاق الصفقة
+        order_type_str = "BUY" if position.type == mt5.ORDER_TYPE_BUY else "SELL"
+        self.telegram.notify_trade_closed(
+            position.symbol,
+            order_type_str,
+            result.profit,
+            position.volume,
+            duration
+        )
+
         return {
             'success': True,
             'ticket': ticket,
