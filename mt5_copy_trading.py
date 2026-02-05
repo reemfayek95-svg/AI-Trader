@@ -47,21 +47,51 @@ class MT5CopyTrader:
         if not mt5.initialize():
             print("❌ فشل تهيئة MT5")
             return False
-            
+
         authorized = mt5.login(
             login=self.account,
             password=self.password,
             server=self.server
         )
-        
+
         if not authorized:
             print(f"❌ فشل تسجيل الدخول: {mt5.last_error()}")
             mt5.shutdown()
             return False
-            
+
         self.connected = True
         print(f"✅ تم الاتصال بحساب: {self.account}")
+
+        # تفعيل التداول الآلي
+        if not self._enable_auto_trading():
+            print("⚠️ تحذير: التداول الآلي قد يكون معطّل")
+
         return True
+
+    def _enable_auto_trading(self) -> bool:
+        """
+        محاولة تفعيل التداول الآلي
+        """
+        try:
+            # فحص حالة Terminal
+            terminal = mt5.terminal_info()
+            if terminal is None:
+                return False
+
+            # فحص السماحيات
+            if not terminal.trade_allowed:
+                print("❌ التداول معطّل في Terminal - روح Tools > Options > Expert Advisors")
+                print("   ✅ فعّل: Allow automated trading")
+                return False
+
+            if not terminal.mqid:
+                print("⚠️ مش مسجل دخول لـ MQL5 Community")
+
+            return terminal.trade_allowed
+
+        except Exception as e:
+            print(f"⚠️ خطأ في فحص Terminal: {e}")
+            return False
         
     def get_account_info(self) -> dict:
         """
@@ -112,6 +142,18 @@ class MT5CopyTrader:
             order_type_mt5 = mt5.ORDER_TYPE_SELL
             price = mt5.symbol_info_tick(symbol).bid
             
+        # فحص التداول على السيمبول
+        symbol_info = mt5.symbol_info(symbol)
+        if symbol_info is None:
+            return {'success': False, 'error': f'السيمبول {symbol} مش موجود'}
+
+        if not symbol_info.visible:
+            if not mt5.symbol_select(symbol, True):
+                return {'success': False, 'error': f'فشل تفعيل {symbol}'}
+
+        if not symbol_info.trade_mode:
+            return {'success': False, 'error': f'التداول معطّل على {symbol}'}
+
         request = {
             "action": mt5.TRADE_ACTION_DEAL,
             "symbol": symbol,
@@ -126,13 +168,24 @@ class MT5CopyTrader:
             "type_time": mt5.ORDER_TIME_GTC,
             "type_filling": mt5.ORDER_FILLING_IOC,
         }
-        
+
         result = mt5.order_send(request)
-        
+
         if result.retcode != mt5.TRADE_RETCODE_DONE:
+            error_msg = f'فشل فتح الصفقة: {result.comment} (Code: {result.retcode})'
+
+            # إضافة حلول حسب نوع الخطأ
+            if result.retcode == 133:  # TRADE_DISABLED
+                error_msg += "\n💡 الحل: افتح MT5 > Tools > Options > Expert Advisors"
+                error_msg += "\n   ✅ فعّل: Allow automated trading"
+            elif result.retcode == 134:  # MARKET_CLOSED
+                error_msg += "\n💡 السوق مقفول دلوقتي"
+            elif result.retcode == 10015:  # INVALID_VOLUME
+                error_msg += f"\n💡 الحجم {volume} غلط - أقل حجم: {symbol_info.volume_min}"
+
             return {
                 'success': False,
-                'error': f'فشل فتح الصفقة: {result.comment}',
+                'error': error_msg,
                 'retcode': result.retcode
             }
             
