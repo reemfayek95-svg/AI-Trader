@@ -73,8 +73,8 @@ logs/
 # Runtime files
 .runtime_env.json
 
-# Test and temporary files
-test.py
+# Test and temporary files (root-level only)
+/test.py
 delete.py
 refresh_data.sh
 
@@ -114,6 +114,7 @@ design.md
 deprecated/
 *_SUCCESS.md
 test_*.py
+!tests/test_*.py
 *.backup
 /data/*_test_agent/
 *__test*
